@@ -48,12 +48,12 @@ class SupplierRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
-            'info' => ['sometimes'],
-            'url' => ['required'],
-            'rules' => ['required'],
-            'address' => ['required'],
-            'distinct' => ['required'],
+            'name' => ['required', 'string', 'max:255'],
+            'info' => ['sometimes', 'string', 'max:255'],
+            'url' => ['required', 'url', 'max:255'],
+            'rules' => ['required', 'url','max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'distinct' => ['required', 'string', 'max:50'],
         ];
     }
 }

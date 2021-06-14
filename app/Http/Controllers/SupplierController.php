@@ -47,7 +47,6 @@ class SupplierController extends Controller
      */
     public function store(SupplierRequest $request)
     {
-
         $supplier = $this->supplierService->store($request->getDto());
         return response()->json([
             'success' => true
