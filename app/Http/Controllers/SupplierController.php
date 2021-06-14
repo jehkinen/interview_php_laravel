@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SupplierRequest;
+use App\Http\Resources\SupplierResource;
 use App\Models\Supplier;
+use App\Services\SupplierService;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+    /** @var SupplierService $supplierService */
+    private $supplierService;
+
+    public function __construct(SupplierService $supplierService)
+    {
+        $this->supplierService = $supplierService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +36,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,8 +45,13 @@ class SupplierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SupplierRequest $request)
     {
+
+        $supplier = $this->supplierService->store($request->getDto());
+        return response()->json([
+            'success' => true
+        ], 204);
     }
 
     /**

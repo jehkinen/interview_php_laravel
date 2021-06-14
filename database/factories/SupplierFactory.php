@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SupplierFactory extends Factory
 {
+
     /**
      * The name of the factory's corresponding model.
      *
@@ -22,7 +23,11 @@ class SupplierFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->domainName,
+            'info' => $this->faker->text,
+            'rules' => $this->faker->text,
+            'url' => $this->faker->url,
+            'district' => $this->faker->city,
         ];
     }
 }

@@ -3,13 +3,18 @@
 namespace Tests\Feature;
 
 use App\Models\Supplier;
+use App\Services\SupplierScheduleService;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class SupplierTest extends TestCase
 {
+    //use DatabaseTransactions;
+
     /**
      * In the task we need to calculate amount of hours suppliers are working during last week for marketing.
      * You can use any way you like to do it, but remember, in real life we are about to have 400+ real
@@ -20,10 +25,16 @@ class SupplierTest extends TestCase
     public function testCalculateAmountOfHoursDuringTheWeekSuppliersAreWorking()
     {
         $response = $this->get('/api/suppliers');
-        $hours = NAN;
+
+        /** @var SupplierScheduleService $supplierScheduleService */
+        $supplierScheduleService = $this->app->make(SupplierScheduleService::class);
+        $startOfPrevWeek = now()->subDays(7)->startOfWeek();
+        $endOfPrevWeek = now()->subDays(7)->endOfWeek();
+
+        $totalWorkedHoursForLastWeek = $supplierScheduleService->calculateTotalWorkedHours($startOfPrevWeek, $endOfPrevWeek);
 
         $response->assertStatus(200);
-        $this->assertEquals(136, $hours,
+        $this->assertEquals(32000, $totalWorkedHoursForLastWeek,
             "Our suppliers are working X hours per week in total. Please, find out how much they work..");
     }
 
@@ -36,11 +47,14 @@ class SupplierTest extends TestCase
      */
     public function testSaveSupplierInDatabase()
     {
-        Supplier::query()->truncate();
+        Supplier::query()->delete();
+
         $responseList = $this->get('/api/suppliers');
+
         $supplier = \json_decode($responseList->getContent(), true)['data']['suppliers'][0];
 
         $response = $this->post('/api/suppliers', $supplier);
+
 
         $response->assertStatus(204);
         $this->assertEquals(1, Supplier::query()->count());
