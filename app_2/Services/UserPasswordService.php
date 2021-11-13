@@ -16,7 +16,7 @@ class UserPasswordService
     use HasUserTrait;
     use ValidationErrorTrait;
 
-    const PASSWORD = '2Amigos!';
+    const PASSWORD = 'hello@dolly';
 
     /**
      * Request password reset for user.
